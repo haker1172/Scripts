@@ -374,13 +374,13 @@ end
 
 
 Library:CreateWindow({["HideButton"] = Enum.KeyCode.RightControl})
-Window:CreateTitle({["Text"] = "A Universal Time"}) 
+Window:CreateTitle({["Text"] = "Made In Heaven"}) 
 local PlayerTab = Window:CreateTab({["IsMainTab"] = true, ["Text"] = "Player", ["Name"] = "PlayerTab"})
 local FarmTab = Window:CreateTab({["IsMainTab"] = false, ["Text"] = "Farm", ["Name"] = "FarmTab"})
 local TeleportTab = Window:CreateTab({["IsMainTab"] = false, ["Text"] = "Teleport", ["Name"] = "TeleportTab"})
 local WorldTab = Window:CreateTab({["IsMainTab"] = false, ["Text"] = "World", ["Name"] = "WorldTab"})
 local MiscTab = Window:CreateTab({["IsMainTab"] = false, ["Text"] = "Misc", ["Name"] = "MiscTab"})
---local mishaTab = Window:CreateTab({["IsMainTab"] = false, ["Text"] = "Для миши", ["Name"] = "ForMisha"})
+local mishaTab = Window:CreateTab({["IsMainTab"] = false, ["Text"] = "Для миши", ["Name"] = "ForMisha"})
 
 
 Tab:CreateToggle({["Text"] = "Super spead", ["Name"] = "SuperSpeadToggle", ["Tab"] = PlayerTab, ["CallBack"] = function(state)
@@ -582,14 +582,14 @@ Tab:CreateButton({["Text"] = "Night", ["Name"] = "NightBtn", ["Tab"] = WorldTab,
     game.Lighting.TimeOfDay = "24:00:00"
 end})
 
--- Tab:CreateButton({["Text"] = "IceCream", ["Name"] = "IceCreamTeleportButton", ["Tab"] = mishaTab, ["CallBack"] = function()
---     local character = player.Character
---     local humanoidRP
---     if character:FindFirstChild("HumanoidRootPart") then
---         humanoidRP = character.HumanoidRootPart
---         humanoidRP.CFrame = CFrame.new(1.88720703, 996.50708, -8.35058594, 1, 0, 0, 0, 1, 0, 0, 0, 1) --CFrame.new(-1.97460938, 991.522949, -8.35058594, 1, 0, 0, 0, 1, 0, 0, 0, 1)
---     end
--- end})
+Tab:CreateButton({["Text"] = "IceCream", ["Name"] = "IceCreamTeleportButton", ["Tab"] = mishaTab, ["CallBack"] = function()
+    local character = player.Character
+    local humanoidRP
+    if character:FindFirstChild("HumanoidRootPart") then
+        humanoidRP = character.HumanoidRootPart
+        humanoidRP.CFrame = CFrame.new(1.88720703, 996.50708, -8.35058594, 1, 0, 0, 0, 1, 0, 0, 0, 1) --CFrame.new(-1.97460938, 991.522949, -8.35058594, 1, 0, 0, 0, 1, 0, 0, 0, 1)
+    end
+end})
 
 
 
