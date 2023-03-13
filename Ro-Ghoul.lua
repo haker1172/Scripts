@@ -452,12 +452,12 @@ function checkStat()
                 if v then
                     local split = string.split(v.Text, '/')
                     local splitCur = nil
+                    splitCur = string.split(split[1], ':')
                     pcall(function()
-                        splitCur = string.split(split[1], ':')
+                        local cur = splitCur[2]:gsub("%s+", "")
                     end)
-                    local cur = splitCur[2]:gsub("%s+", "")
                     local max = split[2]
-                    if cur == max then
+                    if cur >= max then
                         return(1)               
                     end
                 end
