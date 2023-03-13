@@ -356,8 +356,8 @@ function Tab:CreateButton(config)
     end)
 end
 
--- _G.spead = 220 --_G.spead = 120
--- _G.stage = "One"
+_G.spead = 220 --_G.spead = 120
+_G.stage = "One"
 
 local isJump = false
 
@@ -451,7 +451,10 @@ function checkStat()
             if v.Name ~= "FailureLabel" and player.PlayerGui:FindFirstChild("HUD") and player.PlayerGui.HUD.TaskFrame.CompleteLabel.Text ~= "You have no task at the moment." then 
                 if v then
                     local split = string.split(v.Text, '/')
-                    local splitCur = string.split(split[1], ':')
+                    local splitCur = nil
+                    pcall(function()
+                        splitCur = string.split(split[1], ':')
+                    end)
                     local cur = splitCur[2]:gsub("%s+", "")
                     local max = split[2]
                     if cur == max then
