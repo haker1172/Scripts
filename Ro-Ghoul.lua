@@ -418,13 +418,15 @@ end
 function checkStat()	
     if game.Players.LocalPlayer.PlayerGui:FindFirstChild("HUD") then
         for i,v in pairs(game.Players.LocalPlayer.PlayerGui.HUD.TaskFrame:GetChildren()) do
-            if v.Name ~= "FailureLabel" then 
-                local split = string.split(v.Text, '/')
-                local splitCur = string.split(split[1], ':')
-                local cur = splitCur[2]:gsub("%s+", "")
-                local max = split[2]
-                if cur == max then
-                    return(1)               
+            if v.Name ~= "FailureLabel" and player.PlayerGui:FindFirstChild("HUD") and player.PlayerGui.HUD.TaskFrame.CompleteLabel.Text ~= "You have no task at the moment." then 
+                if v then
+                    local split = string.split(v.Text, '/')
+                    local splitCur = string.split(split[1], ':')
+                    local cur = splitCur[2]:gsub("%s+", "")
+                    local max = split[2]
+                    if cur == max then
+                        return(1)               
+                    end
                 end
             end
         end
