@@ -356,8 +356,8 @@ function Tab:CreateButton(config)
     end)
 end
 
-_G.spead = 220 --_G.spead = 120
-_G.stage = "One"
+-- _G.spead = 220 --_G.spead = 120
+-- _G.stage = "One"
 
 local isJump = false
 
@@ -453,12 +453,12 @@ function checkStat()
                     local split = string.split(v.Text, '/')
                     local splitCur = nil
                     local max = split[2]
-                    local cur = nil
                     splitCur = string.split(split[1], ':')
-                    pcall(function()
-                        cur = splitCur[2]:gsub("%s+", "")
-                    end)
                     
+                    if splitCur[2] ~= nil then
+                        local cur = splitCur[2]:gsub("%s+", "")
+                    end
+
                     if max ~= nil and cur ~= nil then
                         if tonumber(cur) >= tonumber(max) then
                             return(1)               
