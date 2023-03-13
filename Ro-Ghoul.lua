@@ -500,9 +500,8 @@ function beat(RP, Enemy, repFarm)
     end)
     if eatCorpesToggleValue then
         wait(1)
-    else
-        wait()
     end
+    wait()
 end
 
 spawn(function()
