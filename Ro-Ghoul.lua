@@ -457,7 +457,7 @@ function checkStat()
                         local cur = splitCur[2]:gsub("%s+", "")
                     end)
                     local max = split[2]
-                    if cur >= max then
+                    if tonumber(cur) >= tonumber(max) then
                         return(1)               
                     end
                 end
