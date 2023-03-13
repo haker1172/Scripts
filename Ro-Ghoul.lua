@@ -367,6 +367,7 @@ local repAutoFarmToggleValue
 local autoFarmToggleValue
 local eatCorpesToggleValue
 local autoCashoutToggleValue
+local antiAfkToggleValue
 
 local aogiri = {
     "Low Rank Aogiri Member",
@@ -378,6 +379,7 @@ Library:CreateWindow({["HideButton"] = Enum.KeyCode.RightControl})
 Window:CreateTitle({["Text"] = "RG | Beta"})
 local playerTab = Window:CreateTab({["Text"] = "Player", ["Name"] = "PlayerTab", ["IsMainTab"] = true})
 local farmTab = Window:CreateTab({["Text"] = "Farm", ["Name"] = "FarmTab"})
+local miscTab = Window:CreateTab({["Text"] = "Misc", ["Name"] = "MiscTab"})
 
 Tab:CreateToggle({["Text"] = "Infinity Jump", ["Name"] = "InfinityJumpToggle", ["Tab"] = playerTab, ["State"] = false, ["CallBack"] = function(state)
     infJumpToggleValue = state
@@ -399,6 +401,11 @@ Tab:CreateToggle({["Text"] = "Eat Corpes", ["Name"] = "EatCorpesToggle", ["Tab"]
     eatCorpesToggleValue = state
 end})
 
+Tab:CreateToggle({["Text"] = "Anti afk", ["Name"] = "AntiAfkToggle", ["Tab"] = miscTab, ["State"] = false, ["CallBack"] = function(state)
+    antiAfkToggleValue = state
+end})
+
+
 
 UIS.InputBegan:Connect(function(input, isTyping)
     if input.KeyCode == Enum.KeyCode.Space then
@@ -411,6 +418,7 @@ UIS.InputEnded:Connect(function(input, isTyping)
         isJump = false
     end
 end)
+
 
 
 function findNearest(onlyAogiri) 
@@ -503,6 +511,14 @@ function beat(RP, Enemy, repFarm)
     end
     wait()
 end
+
+spawn(function()
+    game:GetService("Players").LocalPlayer.Idled:connect(function()
+        if antiAfkToggleValue then
+            game:GetService("VirtualUser"):Button2Down(Vector2.new())
+        end
+    end)
+end)
 
 spawn(function()
     while true do
