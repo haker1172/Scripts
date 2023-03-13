@@ -359,7 +359,10 @@ end
 -- _G.spead = 220 --_G.spead = 120
 -- _G.stage = "One"
 
+local isJump = false
+
 local key = "操你💦💔🍑👌💦操你💦💔🍑👌💦💔🍑👌💦💔🍑👌💔🍑👌💦💔🍑👌"
+local infJumpToggleValue
 local repAutoFarmToggleValue
 local autoFarmToggleValue
 local eatCorpesToggleValue
@@ -373,7 +376,12 @@ local aogiri = {
 
 Library:CreateWindow({["HideButton"] = Enum.KeyCode.RightControl})
 Window:CreateTitle({["Text"] = "RG | Beta"})
-local farmTab = Window:CreateTab({["Text"] = "Farm", ["Name"] = "farmTab", ["IsMainTab"] = true})
+local playerTab = Window:CreateTab({["Text"] = "Player", ["Name"] = "PlayerTab", ["IsMainTab"] = true})
+local farmTab = Window:CreateTab({["Text"] = "Farm", ["Name"] = "FarmTab"})
+
+Tab:CreateToggle({["Text"] = "Infinity Jump", ["Name"] = "InfinityJumpToggle", ["Tab"] = playerTab, ["State"] = false, ["CallBack"] = function(state)
+    infJumpToggleValue = state
+end})
 
 Tab:CreateToggle({["Text"] = "Farm", ["Name"] = "FarmToggle", ["Tab"] = farmTab, ["State"] = false, ["CallBack"] = function(state)
     autoFarmToggleValue = state
@@ -390,6 +398,20 @@ end})
 Tab:CreateToggle({["Text"] = "Eat Corpes", ["Name"] = "EatCorpesToggle", ["Tab"] = farmTab, ["State"] = false, ["CallBack"] = function(state)
     eatCorpesToggleValue = state
 end})
+
+
+UIS.InputBegan:Connect(function(input, isTyping)
+    if input.KeyCode == Enum.KeyCode.Space then
+        isJump = true
+    end
+end)
+
+UIS.InputEnded:Connect(function(input, isTyping)
+    if input.KeyCode == Enum.KeyCode.Space then
+        isJump = false
+    end
+end)
+
 
 function findNearest(onlyAogiri) 
     local nearest = nil
@@ -596,5 +618,14 @@ spawn(function()
             end
         end
         wait()
+    end
+end)
+
+runService.Stepped:Connect(function()
+    if infJumpToggleValue then
+        if isJump then
+            local character = player.Character
+            character.Humanoid:ChangeState("Jumping")
+        end
     end
 end)
