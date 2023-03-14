@@ -496,6 +496,9 @@ function beat(RP, Enemy, repFarm)
     --     return(0)
     -- end)
     while true do 
+	if not Enemy then
+            break
+        end
         EnemyRP = Enemy:FindFirstChild("HumanoidRootPart")
         if Enemy:FindFirstChild(Enemy.Name.." Corpse") then
             if eatCorpesToggleValue then
