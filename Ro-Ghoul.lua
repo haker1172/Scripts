@@ -356,8 +356,10 @@ function Tab:CreateButton(config)
     end)
 end
 
-_G.spead = 220 --_G.spead = 120
-_G.stage = "One"
+
+--_G.spead = 220 
+--_G.stage = "One"
+--_G.timeToSkipNPC = 4
 
 local npc_blacklist = {}
 local goalNPCPos = nil
@@ -431,16 +433,16 @@ function findNearest(onlyAogiri)
         local RP = player.Character:FindFirstChild("HumanoidRootPart")
         for i, v in pairs(game.Workspace.NPCSpawns:GetChildren()) do
             for i1, v1 in pairs(v:GetChildren()) do
-                --if table.find(npc_blacklist, v1) then
-                    --warn("contine")
-                    continue
-                --end
                 if onlyAogiri then
                     if not table.find(aogiri, v1.Name) then
                         continue
                     end
                 end
-                if v1:FindFirstChild("HumanoidRootPart") and v1.Name then 
+                if table.find(npc_blacklist, v1) ~= nil then
+                    continue
+                end
+               
+                if v1:FindFirstChild("HumanoidRootPart") and v1 then 
                     if not nearest then
                         nearest = v1
                     elseif (RP.Position - v1.HumanoidRootPart.Position).Magnitude < (RP.Position - nearest.HumanoidRootPart.Position).Magnitude then
@@ -497,22 +499,23 @@ function eatCorpse(Enemy)
 end
 
 function beat(RP, Enemy, repFarm)
-    print("Called")
---     delay(1, function()
---         table.insert(npc_blacklist, Enemy)
---         warn("Addded to black_list")
---         return(0)
---     end)
+    local addToBlacklist = false
+    delay(_G.timeToSkipNPC, function()
+        addToBlacklist = true
+    end)
     while true do
-        if not Enemy or Enemy.Name then
+        if addToBlacklist then
+            table.insert(npc_blacklist, Enemy)
+            return(0)
+        end
+
+        if not Enemy or not RP then
             break
         end
         EnemyRP = Enemy:FindFirstChild("HumanoidRootPart")
         if Enemy:FindFirstChild(Enemy.Name.." Corpse") then
-            if eatCorpesToggleValue then
-                spawn(function()
-                    eatCorpse(Enemy)
-                end)           
+            if eatCorpesToggleValue then           
+                eatCorpse(Enemy)           
             end
             break
         end
@@ -525,9 +528,9 @@ function beat(RP, Enemy, repFarm)
         end
         wait()
     end
-    -- if eatCorpesToggleValue then
-    --     wait(1)
-    -- end
+    if eatCorpesToggleValue then
+        wait(1)
+    end
     wait()
 end
 
