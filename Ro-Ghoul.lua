@@ -356,8 +356,8 @@ function Tab:CreateButton(config)
     end)
 end
 
-_G.spead = 220 --_G.spead = 120
-_G.stage = "One"
+--_G.spead = 220 --_G.spead = 120
+--_G.stage = "One"
 
 local isJump = false
 local isAlive = true
