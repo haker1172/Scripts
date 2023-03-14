@@ -360,6 +360,7 @@ _G.spead = 220 --_G.spead = 120
 _G.stage = "One"
 
 local isJump = false
+local isAlive = true
 
 local key = "操你💦💔🍑👌💦操你💦💔🍑👌💦💔🍑👌💦💔🍑👌💔🍑👌💦💔🍑👌"
 local infJumpToggleValue
@@ -459,13 +460,14 @@ function checkStat()
                 if max ~= nil and cur ~= nil then
                     if tonumber(cur) >= tonumber(max) then
                         return(1) 
-                    --else   
+                    else   
+                        return(0)
                     end           
                 end        
             end
         end
     end
-    return(0)
+    return(-1)
 end
 
 function eatCorpse(Enemy)
@@ -527,11 +529,13 @@ end)
 spawn(function()
     while true do
         if (player.Character:FindFirstChild("Humanoid") and player.Character.Humanoid.Health == 0) and (autoFarmToggleValue or repAutoFarmToggleValue) then
+            isAlive = false
 	        repeat wait() until player.PlayerGui:FindFirstChild("SpawnSelection")
             repeat wait() until not player.PlayerGui:FindFirstChild("SpawnSelection")
             wait(1)
             repeat wait() until player.Character:FindFirstChild("Remotes")
 	        player.Character.Remotes.KeyEvent:FireServer(key, _G.stage, "Down", CFrame.new(), CFrame.new())
+            isAlive = true
         end
         wait()
     end
@@ -578,7 +582,7 @@ end
 
 spawn(function()
     while true do 
-        if repAutoFarmToggleValue then
+        if repAutoFarmToggleValue and isAlive then
             if player.PlayerGui:FindFirstChild("HUD") then
                 if player.Character:FindFirstChild("HumanoidRootPart") then
                     if player.PlayerGui.HUD.TaskFrame.CompleteLabel.Text == "You have no task at the moment." then
