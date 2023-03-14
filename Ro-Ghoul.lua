@@ -356,8 +356,10 @@ function Tab:CreateButton(config)
     end)
 end
 
-_G.spead = 220 --_G.spead = 120
+_G.spead = 50 --_G.spead = 120
 _G.stage = "One"
+
+local goalNPCPos = nil
 
 local isJump = false
 local isAlive = true
@@ -601,16 +603,31 @@ spawn(function()
                         end    
                     elseif checkStat() == 0 then
                         local RP = player.Character:FindFirstChild("HumanoidRootPart")
-                        local nearest = findNearest(true)
+                        local nearest
+                        while true do
+                            nearest = findNearest(true)
+                            if nearest then
+                                break
+                            end
+                            wait()
+                        end
                         if nearest then
+                            goalNPCPos = nearest:FindFirstChild("HumanoidRootPart").Position
                             local tween = tweenService:Create(RP, TweenInfo.new((RP.Position - nearest:FindFirstChild("HumanoidRootPart").Position).Magnitude / _G.spead, Enum.EasingStyle.Linear), {CFrame = nearest:FindFirstChild("HumanoidRootPart").CFrame})
                             tween:Play()
-                            while true do
+                            while isAlive do
                                 if not repAutoFarmToggleValue or not nearest:FindFirstChild("HumanoidRootPart") then
                                     tween:Pause()
                                     break
                                 end
                                 
+                                if goalNPCPos ~= nearest:FindFirstChild("HumanoidRootPart").Position then
+                                    tween:Pause()
+                                    tween = tweenService:Create(RP, TweenInfo.new((RP.Position - nearest:FindFirstChild("HumanoidRootPart").Position).Magnitude / _G.spead, Enum.EasingStyle.Linear), {CFrame = nearest:FindFirstChild("HumanoidRootPart").CFrame})
+                                    tween:Play()
+                                    goalNPCPos = nearest:FindFirstChild("HumanoidRootPart").Position
+                                end
+
                                 if (RP.Position - nearest.HumanoidRootPart.Position).Magnitude < 30 then
                                     tween:Pause()
                                     beat(RP, nearest, true)
