@@ -356,8 +356,8 @@ function Tab:CreateButton(config)
     end)
 end
 
---_G.spead = 220 --_G.spead = 120
---_G.stage = "One"
+_G.spead = 220 --_G.spead = 120
+_G.stage = "One"
 
 local isJump = false
 local isAlive = true
@@ -490,28 +490,28 @@ function eatCorpse(Enemy)
 end
 
 function beat(RP, Enemy, repFarm)
-    EnemyRP = Enemy:FindFirstChild("HumanoidRootPart")
-    local connection
     -- delay(4, function()
     --     return(0)
     -- end)
-    connection = runService.Stepped:Connect(function()
+    while true do 
+        EnemyRP = Enemy:FindFirstChild("HumanoidRootPart")
         if Enemy:FindFirstChild(Enemy.Name.." Corpse") then
-            connection:Disconnect()
             if eatCorpesToggleValue then
                 spawn(function()
                     eatCorpse(Enemy)
-                end)
+                end)           
             end
+            break
         end
         RP.CFrame = EnemyRP.CFrame
         player.Character.Remotes.KeyEvent:FireServer(key, "Mouse1", "Down", CFrame.new(), CFrame.new())
-        if (not autoFarmToggleValue and not repFarm) or (player.Character:FindFirstChild("Humanoid") and player.Character.Humanoid.Health == 0) then
-            connection:Disconnect()
+        if ((not autoFarmToggleValue and not repFarm) or (player.Character:FindFirstChild("Humanoid"))) and not isAlive then
+            break
         elseif not repAutoFarmToggleValue then
-            connection:Disconnect()
+            break
         end
-    end)
+        wait()
+    end
     if eatCorpesToggleValue then
         wait(1)
     end
