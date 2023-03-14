@@ -357,9 +357,9 @@ function Tab:CreateButton(config)
 end
 
 
---_G.spead = 220 --_G.spead = 120
---_G.stage = "One"
---_G.timeToSkipNPC = 4
+_G.spead = 220 --_G.spead = 120
+_G.stage = "One"
+_G.timeToSkipNPC = 4
 
 local npc_blacklist = {}
 local goalNPCPos = nil
@@ -487,7 +487,9 @@ function eatCorpse(Enemy)
                 spawn(function()
                     repeat
                         player.Character.HumanoidRootPart.CFrame = Enemy:FindFirstChild(Enemy.Name.." Corpse").HumanoidRootPart.CFrame
-                        fireclickdetector(Enemy:FindFirstChild(Enemy.Name.." Corpse"):FindFirstChild("ClickPart"):FindFirstChildWhichIsA("ClickDetector"), 1)
+                        pcall(function()
+                            fireclickdetector(Enemy:FindFirstChild(Enemy.Name.." Corpse"):FindFirstChild("ClickPart"):FindFirstChildWhichIsA("ClickDetector"), 1)
+                        end)
                     wait()
                     until rep == true
                 end)
@@ -509,6 +511,15 @@ function beat(RP, Enemy, repFarm)
             return(0)
         end
 
+        if Enemy:FindFirstChild(Enemy.Name.." Corpse") then
+            if eatCorpesToggleValue then           
+                spawn(function()
+                    eatCorpse(Enemy)                    
+                end)  
+            end
+            break
+        end
+
         if not Enemy:FindFirstChild("HumanoidRootPart") or not RP then
             break
         end
@@ -517,12 +528,7 @@ function beat(RP, Enemy, repFarm)
 
         player.Character.Remotes.KeyEvent:FireServer(key, "Mouse1", "Down", CFrame.new(), CFrame.new())
 
-        if Enemy:FindFirstChild(Enemy.Name.." Corpse") then
-            if eatCorpesToggleValue then           
-                eatCorpse(Enemy)           
-            end
-            break
-        end
+        
 
         if ((not autoFarmToggleValue and not repFarm) or (player.Character:FindFirstChild("Humanoid"))) and not isAlive then
             break
