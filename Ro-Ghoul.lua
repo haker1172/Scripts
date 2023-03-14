@@ -498,11 +498,11 @@ end
 
 function beat(RP, Enemy, repFarm)
     print("Called")
-    delay(1, function()
-        table.insert(npc_blacklist, Enemy)
-        warn("Addded to black_list")
-        return(0)
-    end)
+--     delay(1, function()
+--         table.insert(npc_blacklist, Enemy)
+--         warn("Addded to black_list")
+--         return(0)
+--     end)
     while true do
         if not Enemy or Enemy.Name then
             break
