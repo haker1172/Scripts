@@ -357,7 +357,7 @@ function Tab:CreateButton(config)
 end
 
 
---_G.spead = 220 
+--_G.spead = 220 --_G.spead = 120
 --_G.stage = "One"
 --_G.timeToSkipNPC = 4
 
@@ -509,18 +509,21 @@ function beat(RP, Enemy, repFarm)
             return(0)
         end
 
-        if not Enemy or not RP then
+        if not Enemy:FindFirstChild("HumanoidRootPart") or not RP then
             break
         end
-        EnemyRP = Enemy:FindFirstChild("HumanoidRootPart")
+
+        RP.CFrame = Enemy:FindFirstChild("HumanoidRootPart").CFrame
+
+        player.Character.Remotes.KeyEvent:FireServer(key, "Mouse1", "Down", CFrame.new(), CFrame.new())
+
         if Enemy:FindFirstChild(Enemy.Name.." Corpse") then
             if eatCorpesToggleValue then           
                 eatCorpse(Enemy)           
             end
             break
         end
-        RP.CFrame = EnemyRP.CFrame
-        player.Character.Remotes.KeyEvent:FireServer(key, "Mouse1", "Down", CFrame.new(), CFrame.new())
+
         if ((not autoFarmToggleValue and not repFarm) or (player.Character:FindFirstChild("Humanoid"))) and not isAlive then
             break
         elseif not repAutoFarmToggleValue then
