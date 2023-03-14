@@ -356,8 +356,8 @@ function Tab:CreateButton(config)
     end)
 end
 
--- _G.spead = 220 --_G.spead = 120
--- _G.stage = "One"
+_G.spead = 220 --_G.spead = 120
+_G.stage = "One"
 
 local isJump = false
 
@@ -447,24 +447,21 @@ end
 
 function checkStat()	
     if game.Players.LocalPlayer.PlayerGui:FindFirstChild("HUD") then
-        for i,v in pairs(game.Players.LocalPlayer.PlayerGui.HUD.TaskFrame:GetChildren()) do
-            if v.Name ~= "FailureLabel" and player.PlayerGui:FindFirstChild("HUD") and player.PlayerGui.HUD.TaskFrame.CompleteLabel.Text ~= "You have no task at the moment." then 
-                if v then
-                    local split = string.split(v.Text, '/')
-                    local splitCur = nil
-                    local max = split[2]
-                    splitCur = string.split(split[1], ':')
-                    
-                    if splitCur[2] ~= nil then
-                        local cur = splitCur[2]:gsub("%s+", "")
-                    end
+        for i, v in pairs(game.Players.LocalPlayer.PlayerGui.HUD.TaskFrame:GetChildren()) do
+            if v.Name ~= "FailureLabel" and player.PlayerGui:FindFirstChild("HUD") and player.PlayerGui.HUD.TaskFrame.CompleteLabel.Text ~= "You have no task at the moment." and v.Text then 
+                local split = string.split(v.Text, '/')
 
-                    if max ~= nil and cur ~= nil then
-                        if tonumber(cur) >= tonumber(max) then
-                            return(1)               
-                        end
-                    end
-                end
+                local max = split[2]
+                local splitCur = string.split(split[1], ':')
+                
+                local cur = splitCur[2]:gsub("%s+", "")
+                
+                if max ~= nil and cur ~= nil then
+                    if tonumber(cur) >= tonumber(max) then
+                        return(1) 
+                    --else   
+                    end           
+                end        
             end
         end
     end
@@ -493,9 +490,9 @@ end
 function beat(RP, Enemy, repFarm)
     EnemyRP = Enemy:FindFirstChild("HumanoidRootPart")
     local connection
-    delay(4, function()
-        return(0)
-    end)
+    -- delay(4, function()
+    --     return(0)
+    -- end)
     connection = runService.Stepped:Connect(function()
         if Enemy:FindFirstChild(Enemy.Name.." Corpse") then
             connection:Disconnect()
@@ -599,7 +596,6 @@ spawn(function()
                             end
                         end    
                     elseif checkStat() == 0 then
-                        print(checkStat() == 1)
                         local RP = player.Character:FindFirstChild("HumanoidRootPart")
                         local nearest = findNearest(true)
                         if nearest then
