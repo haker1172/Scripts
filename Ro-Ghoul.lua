@@ -431,10 +431,10 @@ function findNearest(onlyAogiri)
         local RP = player.Character:FindFirstChild("HumanoidRootPart")
         for i, v in pairs(game.Workspace.NPCSpawns:GetChildren()) do
             for i1, v1 in pairs(v:GetChildren()) do
-                if table.find(npc_blacklist, v1) then
-                    warn("contine")
+                --if table.find(npc_blacklist, v1) then
+                    --warn("contine")
                     continue
-                end
+                --end
                 if onlyAogiri then
                     if not table.find(aogiri, v1.Name) then
                         continue
