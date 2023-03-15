@@ -356,8 +356,8 @@ function Tab:CreateButton(config)
     end)
 end
 
-
-_G.spead = 220 --_G.spead = 120
+_G.farmSpeed = 200
+_G.repFarmSpead = 220 --_G.spead = 120
 _G.stage = "One"
 _G.timeToSkipNPC = 4
 
@@ -573,7 +573,7 @@ spawn(function()
                 local RP = player.Character:FindFirstChild("HumanoidRootPart")
                 local nearest = findNearest()
                 if nearest then
-                    local tween = tweenService:Create(RP, TweenInfo.new((RP.Position - nearest:FindFirstChild("HumanoidRootPart").Position).Magnitude / _G.spead, Enum.EasingStyle.Linear), {CFrame = nearest:FindFirstChild("HumanoidRootPart").CFrame})
+                    local tween = tweenService:Create(RP, TweenInfo.new((RP.Position - nearest:FindFirstChild("HumanoidRootPart").Position).Magnitude / _G.farmSpeed, Enum.EasingStyle.Linear), {CFrame = nearest:FindFirstChild("HumanoidRootPart").CFrame})
                     tween:Play()
                     while true do
                         if not autoFarmToggleValue then
@@ -614,16 +614,27 @@ spawn(function()
                         local RP = player.Character:FindFirstChild("HumanoidRootPart")
                         local tp_part = game.Workspace.Anteiku.Yoshimura.HumanoidRootPart
 
-                        tweenService:Create(RP, TweenInfo.new((RP.Position - tp_part.Position).Magnitude / _G.spead, Enum.EasingStyle.Linear), {CFrame = tp_part.CFrame}):Play()
+                        local tween = tweenService:Create(RP, TweenInfo.new((RP.Position - tp_part.Position).Magnitude / _G.repFarmSpead, Enum.EasingStyle.Linear), {CFrame = tp_part.CFrame})
 
-                        if RP then
-                            if (RP.Position - tp_part.Position).Magnitude < 2 then
-                                getQuest()
-                                if autoCashoutToggleValue then
-                                    cashout()
-                                end
+                        tween:Play()
+
+                        while true do
+                            if not repAutoFarmToggleValue then
+                                tween:Pause()
+                                break
                             end
-                        end    
+
+                            if RP then
+                                if (RP.Position - tp_part.Position).Magnitude < 2 then
+                                    getQuest()
+                                    if autoCashoutToggleValue then
+                                        cashout()
+                                    end
+                                    break
+                                end
+                            end    
+                            wait()
+                        end
                     elseif checkStat() == 0 then
                         local RP = player.Character:FindFirstChild("HumanoidRootPart")
                         local nearest
@@ -636,7 +647,7 @@ spawn(function()
                         end
                         if nearest then
                             goalNPCPos = nearest:FindFirstChild("HumanoidRootPart").Position
-                            local tween = tweenService:Create(RP, TweenInfo.new((RP.Position - nearest:FindFirstChild("HumanoidRootPart").Position).Magnitude / _G.spead, Enum.EasingStyle.Linear), {CFrame = nearest:FindFirstChild("HumanoidRootPart").CFrame})
+                            local tween = tweenService:Create(RP, TweenInfo.new((RP.Position - nearest:FindFirstChild("HumanoidRootPart").Position).Magnitude / _G.repFarmSpead, Enum.EasingStyle.Linear), {CFrame = nearest:FindFirstChild("HumanoidRootPart").CFrame})
                             tween:Play()
                             while isAlive do
                                 if not repAutoFarmToggleValue or not nearest:FindFirstChild("HumanoidRootPart") then
@@ -646,7 +657,7 @@ spawn(function()
                                 
                                 if goalNPCPos ~= nearest:FindFirstChild("HumanoidRootPart").Position then
                                     tween:Pause()
-                                    tween = tweenService:Create(RP, TweenInfo.new((RP.Position - nearest:FindFirstChild("HumanoidRootPart").Position).Magnitude / _G.spead, Enum.EasingStyle.Linear), {CFrame = nearest:FindFirstChild("HumanoidRootPart").CFrame})
+                                    tween = tweenService:Create(RP, TweenInfo.new((RP.Position - nearest:FindFirstChild("HumanoidRootPart").Position).Magnitude / _G.repFarmSpead, Enum.EasingStyle.Linear), {CFrame = nearest:FindFirstChild("HumanoidRootPart").CFrame})
                                     tween:Play()
                                     goalNPCPos = nearest:FindFirstChild("HumanoidRootPart").Position
                                 end
@@ -664,16 +675,27 @@ spawn(function()
                             local RP = player.Character:FindFirstChild("HumanoidRootPart")
                             local tp_part = game.Workspace.Anteiku.Yoshimura.HumanoidRootPart
 
-                            tweenService:Create(RP, TweenInfo.new((RP.Position - tp_part.Position).Magnitude / _G.spead, Enum.EasingStyle.Linear), {CFrame = tp_part.CFrame}):Play()
+                            local tween = tweenService:Create(RP, TweenInfo.new((RP.Position - tp_part.Position).Magnitude / _G.repFarmSpead, Enum.EasingStyle.Linear), {CFrame = tp_part.CFrame})
 
-                            if RP then
-                                if (RP.Position - tp_part.Position).Magnitude < 2 then
-                                    getQuest()
-                                    if autoCashoutToggleValue then
-                                        cashout()
-                                    end
+                            tween:Play()
+
+                            while true do
+                                if not repAutoFarmToggleValue then
+                                    tween:Pause()
+                                    break
                                 end
-                            end    
+
+                                if RP then
+                                    if (RP.Position - tp_part.Position).Magnitude < 2 then
+                                        getQuest()
+                                        if autoCashoutToggleValue then
+                                            cashout()
+                                        end
+                                        break
+                                    end
+                                end   
+                                wait()
+                            end 
                         end
                     end 
                 end
