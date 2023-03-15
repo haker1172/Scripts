@@ -371,7 +371,7 @@ local key = "操你💦💔🍑👌💦操你💦💔🍑👌💦💔🍑👌�
 local infJumpToggleValue
 local repAutoFarmToggleValue
 local autoFarmToggleValue
-local eatCorpesToggleValue
+local eatCorpsesToggleValue
 local autoCashoutToggleValue
 local antiAfkToggleValue
 
@@ -404,7 +404,7 @@ Tab:CreateToggle({["Text"] = "Auto Cashout", ["Name"] = "autoRepAutoFarmToggle",
 end})
 
 Tab:CreateToggle({["Text"] = "Eat Corpes", ["Name"] = "EatCorpesToggle", ["Tab"] = farmTab, ["State"] = false, ["CallBack"] = function(state)
-    eatCorpesToggleValue = state
+    eatCorpsesToggleValue = state
 end})
 
 Tab:CreateToggle({["Text"] = "Anti afk", ["Name"] = "AntiAfkToggle", ["Tab"] = miscTab, ["State"] = false, ["CallBack"] = function(state)
@@ -512,7 +512,7 @@ function beat(RP, Enemy, repFarm)
         end
 
         if Enemy:FindFirstChild(Enemy.Name.." Corpse") then
-            if eatCorpesToggleValue then           
+            if eatCorpsesToggleValue then           
                 spawn(function()
                     eatCorpse(Enemy)                    
                 end)  
@@ -537,7 +537,7 @@ function beat(RP, Enemy, repFarm)
         end
         wait()
     end
-    if eatCorpesToggleValue then
+    if eatCorpsesToggleValue then
         wait(1)
     end
     wait()
