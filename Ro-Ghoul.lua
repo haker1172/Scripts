@@ -356,10 +356,10 @@ function Tab:CreateButton(config)
     end)
 end
 
-_G.farmSpeed = 200
-_G.repFarmSpead = 220 --_G.spead = 120
-_G.stage = "One"
-_G.timeToSkipNPC = 4
+--_G.farmSpeed = 200
+--_G.repFarmSpead = 220
+--_G.stage = "One"
+--_G.timeToSkipNPC = 4
 
 local npc_blacklist = {}
 local goalNPCPos = nil
