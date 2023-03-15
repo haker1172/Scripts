@@ -356,10 +356,10 @@ function Tab:CreateButton(config)
     end)
 end
 
---_G.farmSpeed = 200
---_G.repFarmSpead = 220
---_G.stage = "One"
---_G.timeToSkipNPC = 4
+_G.farmSpeed = 200
+_G.repFarmSpead = 220
+_G.stage = "One"
+_G.timeToSkipNPC = 4
 
 local npc_blacklist = {}
 local goalNPCPos = nil
@@ -480,7 +480,7 @@ function checkStat()
 end
 
 function eatCorpse(Enemy)
-    if Enemy:FindFirstChild(Enemy.Name.." Corpse") then
+    if Enemy:FindFirstChild(Enemy.Name.." Corpse") and player.Character:FindFirstChild("HumanoidRootPart") then
         if Enemy:FindFirstChild(Enemy.Name.." Corpse"):FindFirstChild("ClickPart") then
             if Enemy:FindFirstChild(Enemy.Name.." Corpse"):FindFirstChild("ClickPart"):FindFirstChildWhichIsA("ClickDetector") then
                 local rep = false
