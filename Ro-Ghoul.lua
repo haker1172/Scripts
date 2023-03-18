@@ -416,12 +416,10 @@ Tab:CreateButton({["Text"] = "Nishiki", ["Name"] = "NishikiTeleportBtn", ["Tab"]
                     local RP = player.Character:FindFirstChild("HumanoidRootPart")
                     local tp_part = v:FindFirstChild("Nishiki Nishio"):FindFirstChild("HumanoidRootPart")
                     local tween = tweenService:Create(RP, TweenInfo.new((RP.Position - tp_part.Position).Magnitude / _G.farmSpeed, Enum.EasingStyle.Linear), {CFrame = tp_part.CFrame})
-                    print(tp_part)
-                    print("Tween")
+                    tween:Play()
                     while true do
                         if not RP or not tp_part then
                             tween:Pause()
-                            print("break")
                             break
                         end
                         wait()
@@ -440,7 +438,7 @@ Tab:CreateButton({["Text"] = "Amon", ["Name"] = "AmonTeleportBtn", ["Tab"] = tel
                     local RP = player.Character:FindFirstChild("HumanoidRootPart")
                     local tp_part = v:FindFirstChild("Koutarou Amon"):FindFirstChild("HumanoidRootPart")
                     local tween = tweenService:Create(RP, TweenInfo.new((RP.Position - tp_part.Position).Magnitude / _G.farmSpeed, Enum.EasingStyle.Linear), {CFrame = tp_part.CFrame})
-
+                    tween:Play()
                     while true do
                         if not RP or not tp_part then
                             tween:Pause()
