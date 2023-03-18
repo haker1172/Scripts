@@ -356,10 +356,10 @@ function Tab:CreateButton(config)
     end)
 end
 
-_G.farmSpeed = 200
-_G.repFarmSpead = 220
-_G.stage = "One"
-_G.timeToSkipNPC = 4
+--_G.farmSpeed = 200
+--_G.repFarmSpead = 220
+--_G.stage = "One"
+--_G.timeToSkipNPC = 4
 
 local npc_blacklist = {}
 local goalNPCPos = nil
@@ -385,6 +385,7 @@ Library:CreateWindow({["HideButton"] = Enum.KeyCode.RightControl})
 Window:CreateTitle({["Text"] = "RG | Beta"})
 local playerTab = Window:CreateTab({["Text"] = "Player", ["Name"] = "PlayerTab", ["IsMainTab"] = true})
 local farmTab = Window:CreateTab({["Text"] = "Farm", ["Name"] = "FarmTab"})
+local teleportTab = Window:CreateTab({["Text"] = "Teleport", ["Name"] = "TeleportTab"})
 local miscTab = Window:CreateTab({["Text"] = "Misc", ["Name"] = "MiscTab"})
 
 Tab:CreateToggle({["Text"] = "Infinity Jump", ["Name"] = "InfinityJumpToggle", ["Tab"] = playerTab, ["State"] = false, ["CallBack"] = function(state)
@@ -405,6 +406,50 @@ end})
 
 Tab:CreateToggle({["Text"] = "Eat Corpes", ["Name"] = "EatCorpesToggle", ["Tab"] = farmTab, ["State"] = false, ["CallBack"] = function(state)
     eatCorpsesToggleValue = state
+end})
+
+Tab:CreateButton({["Text"] = "Nishiki", ["Name"] = "NishikiTeleportBtn", ["Tab"] = teleportTab, ["State"] = false, ["CallBack"] = function(state)
+    if player.Character:FindFirstChild("HumanoidRootPart") then
+        for i, v in pairs(game.Workspace.NPCSpawns:GetChildren()) do
+            if v.Name == "BossSpawns" then
+                if v:FindFirstChild("Nishiki Nishio") then
+                    local RP = player.Character:FindFirstChild("HumanoidRootPart")
+                    local tp_part = v:FindFirstChild("Nishiki Nishio"):FindFirstChild("HumanoidRootPart")
+                    local tween = tweenService:Create(RP, TweenInfo.new((RP.Position - tp_part.Position).Magnitude / _G.farmSpeed, Enum.EasingStyle.Linear), {CFrame = tp_part.CFrame})
+
+                    while true do
+                        if not RP or not tp_part then
+                            tween:Pause()
+                            break
+                        end
+                        wait()
+                    end 
+                end
+            end
+        end
+    end
+end})
+
+Tab:CreateButton({["Text"] = "Amon", ["Name"] = "AmonTeleportBtn", ["Tab"] = teleportTab, ["State"] = false, ["CallBack"] = function(state)
+    if player.Character:FindFirstChild("HumanoidRootPart") then
+        for i, v in pairs(game.Workspace.NPCSpawns:GetChildren()) do
+            if v.Name == "BossSpawns" then
+                if v:FindFirstChild("Koutarou Amon") then
+                    local RP = player.Character:FindFirstChild("HumanoidRootPart")
+                    local tp_part = v:FindFirstChild("Koutarou Amon"):FindFirstChild("HumanoidRootPart")
+                    local tween = tweenService:Create(RP, TweenInfo.new((RP.Position - tp_part.Position).Magnitude / _G.farmSpeed, Enum.EasingStyle.Linear), {CFrame = tp_part.CFrame})
+
+                    while true do
+                        if not RP or not tp_part then
+                            tween:Pause()
+                            break
+                        end
+                        wait()
+                    end 
+                end
+            end
+        end
+    end
 end})
 
 Tab:CreateToggle({["Text"] = "Anti afk", ["Name"] = "AntiAfkToggle", ["Tab"] = miscTab, ["State"] = false, ["CallBack"] = function(state)
@@ -506,11 +551,6 @@ function beat(RP, Enemy, repFarm)
         addToBlacklist = true
     end)
     while true do
-        if addToBlacklist then
-            table.insert(npc_blacklist, Enemy)
-            return(0)
-        end
-
         if Enemy:FindFirstChild(Enemy.Name.." Corpse") then
             if eatCorpsesToggleValue then           
                 spawn(function()
@@ -524,11 +564,14 @@ function beat(RP, Enemy, repFarm)
             break
         end
 
+        if addToBlacklist then
+            table.insert(npc_blacklist, Enemy)
+            return(0)
+        end
+
         RP.CFrame = Enemy:FindFirstChild("HumanoidRootPart").CFrame
 
         player.Character.Remotes.KeyEvent:FireServer(key, "Mouse1", "Down", CFrame.new(), CFrame.new())
-
-        
 
         if ((not autoFarmToggleValue and not repFarm) or (player.Character:FindFirstChild("Humanoid"))) and not isAlive then
             break
@@ -619,20 +662,18 @@ spawn(function()
                         tween:Play()
 
                         while true do
-                            if not repAutoFarmToggleValue then
+                            if not repAutoFarmToggleValue or not RP or not tp_part then
                                 tween:Pause()
                                 break
                             end
 
-                            if RP then
-                                if (RP.Position - tp_part.Position).Magnitude < 2 then
-                                    getQuest()
-                                    if autoCashoutToggleValue then
-                                        cashout()
-                                    end
-                                    break
+                            if (RP.Position - tp_part.Position).Magnitude < 2 then
+                                getQuest()
+                                if autoCashoutToggleValue then
+                                    cashout()
                                 end
-                            end    
+                                break
+                            end
                             wait()
                         end
                     elseif checkStat() == 0 then
@@ -680,20 +721,18 @@ spawn(function()
                             tween:Play()
 
                             while true do
-                                if not repAutoFarmToggleValue then
+                                if not repAutoFarmToggleValue or not RP or not tp_part then
                                     tween:Pause()
                                     break
                                 end
 
-                                if RP then
-                                    if (RP.Position - tp_part.Position).Magnitude < 2 then
-                                        getQuest()
-                                        if autoCashoutToggleValue then
-                                            cashout()
-                                        end
-                                        break
+                                if (RP.Position - tp_part.Position).Magnitude < 2 then
+                                    getQuest()
+                                    if autoCashoutToggleValue then
+                                        cashout()
                                     end
-                                end   
+                                    break
+                                end
                                 wait()
                             end 
                         end
