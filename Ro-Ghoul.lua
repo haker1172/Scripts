@@ -356,10 +356,15 @@ function Tab:CreateButton(config)
     end)
 end
 
--- _G.farmSpeed = 200
--- _G.repFarmSpead = 220
--- _G.stage = "One"
--- _G.timeToSkipNPC = 4
+--_G.farmSpeed = 200
+--_G.repFarmSpead = 220
+--_G.stage = "One"
+--_G.timeToSkipNPC = 4
+--_G.bossesWhitelist = {
+--    "Nishiki Nishio",
+--    "Koutarou Amon",
+--    "Eto Yoshimura"
+--}
 
 local npc_blacklist = {}
 local goalNPCPos = nil
@@ -372,6 +377,7 @@ local infJumpToggleValue
 local repAutoFarmToggleValue
 local autoFarmToggleValue
 local eatCorpsesToggleValue
+local bossAutoFarmToggleValue
 local autoCashoutToggleValue
 local antiAfkToggleValue
 
@@ -400,11 +406,15 @@ Tab:CreateToggle({["Text"] = "Farm Reputation", ["Name"] = "autoRepAutoFarmToggl
     repAutoFarmToggleValue = state
 end})
 
+Tab:CreateToggle({["Text"] = "Boss Farm", ["Name"] = "BossAutoFarmToggle", ["Tab"] = farmTab, ["State"] = false, ["CallBack"] = function(state)
+    bossAutoFarmToggleValue = state
+end})
+
 Tab:CreateToggle({["Text"] = "Auto Cashout", ["Name"] = "autoRepAutoFarmToggle", ["Tab"] = farmTab, ["State"] = false, ["CallBack"] = function(state)
     autoCashoutToggleValue = state
 end})
 
-Tab:CreateToggle({["Text"] = "Eat Corpes", ["Name"] = "EatCorpesToggle", ["Tab"] = farmTab, ["State"] = false, ["CallBack"] = function(state)
+Tab:CreateToggle({["Text"] = "Eat Corpses", ["Name"] = "EatCorpsesToggle", ["Tab"] = farmTab, ["State"] = false, ["CallBack"] = function(state)
     eatCorpsesToggleValue = state
 end})
 
@@ -471,31 +481,53 @@ UIS.InputEnded:Connect(function(input, isTyping)
 end)
 
 
-
-function findNearest(onlyAogiri) 
+function findNearest(onlyAogiri, onlyBosses) 
     local nearest = nil
+    local nearestBoss = nil
     if player.Character:FindFirstChild("HumanoidRootPart") then
         local RP = player.Character:FindFirstChild("HumanoidRootPart")
         for i, v in pairs(game.Workspace.NPCSpawns:GetChildren()) do
-            for i1, v1 in pairs(v:GetChildren()) do
-                if onlyAogiri then
-                    if not table.find(aogiri, v1.Name) then
+            if bossAutoFarmToggleValue then
+                if v.Name == "BossSpawns" then
+                    for k, boss in pairs(v:GetChildren()) do
+                        if table.find(_G.bossesWhitelist, boss.Name) then
+                            print(boss)
+                            print("boss")
+                            if boss:FindFirstChild("HumanoidRootPart") then
+                                if not nearestBoss then
+                                    nearestBoss = boss
+                                elseif (RP.Position - boss.HumanoidRootPart.Position).Magnitude < (RP.Position - nearestBoss.HumanoidRootPart.Position).Magnitude then
+                                    nearestBoss = boss
+                                end
+                            end  
+                        end
+                    end
+                end  
+            end
+            if not nearestBoss and not onlyBosses then      
+                for i1, v1 in pairs(v:GetChildren()) do              
+                    if onlyAogiri then
+                        if not table.find(aogiri, v1.Name) then
+                            continue
+                        end
+                    end
+                    if table.find(npc_blacklist, v1) then
                         continue
                     end
+                
+                    if v1:FindFirstChild("HumanoidRootPart") and v1 then 
+                        if not nearest then
+                            nearest = v1
+                        elseif (RP.Position - v1.HumanoidRootPart.Position).Magnitude < (RP.Position - nearest.HumanoidRootPart.Position).Magnitude then
+                            nearest = v1
+                        end
+                    end   
                 end
-                if table.find(npc_blacklist, v1) ~= nil then
-                    continue
-                end
-               
-                if v1:FindFirstChild("HumanoidRootPart") and v1 then 
-                    if not nearest then
-                        nearest = v1
-                    elseif (RP.Position - v1.HumanoidRootPart.Position).Magnitude < (RP.Position - nearest.HumanoidRootPart.Position).Magnitude then
-                        nearest = v1
-                    end
-                end                 
             end
-        end 
+        end        
+    end
+    if nearestBoss then
+        return(nearestBoss)
     end
     return(nearest)
 end
@@ -531,10 +563,12 @@ function eatCorpse(Enemy)
                 local rep = false
                 spawn(function()
                     repeat
-                        player.Character.HumanoidRootPart.CFrame = Enemy:FindFirstChild(Enemy.Name.." Corpse").HumanoidRootPart.CFrame
-                        pcall(function()
-                            fireclickdetector(Enemy:FindFirstChild(Enemy.Name.." Corpse"):FindFirstChild("ClickPart"):FindFirstChildWhichIsA("ClickDetector"), 1)
-                        end)
+                        if player.Character:FindFirstChild("HumanoidRootPart") then
+                            player.Character.HumanoidRootPart.CFrame = Enemy:FindFirstChild(Enemy.Name.." Corpse").HumanoidRootPart.CFrame
+                            pcall(function()
+                                fireclickdetector(Enemy:FindFirstChild(Enemy.Name.." Corpse"):FindFirstChild("ClickPart"):FindFirstChildWhichIsA("ClickDetector"), 1)
+                            end)
+                        end
                     wait()
                     until rep == true
                 end)
@@ -545,11 +579,14 @@ function eatCorpse(Enemy)
     end
 end
 
-function beat(RP, Enemy, repFarm)
+function beat(RP, Enemy)
     local addToBlacklist = false
-    delay(_G.timeToSkipNPC, function()
-        addToBlacklist = true
-    end)
+    local isBoss = table.find(_G.bossesWhitelist, Enemy.Name)
+    if not isBoss then
+        delay(_G.timeToSkipNPC, function()
+            addToBlacklist = true
+        end)
+    end
     while true do
         if Enemy:FindFirstChild(Enemy.Name.." Corpse") then
             if eatCorpsesToggleValue then           
@@ -560,7 +597,7 @@ function beat(RP, Enemy, repFarm)
             break
         end
 
-        if not Enemy:FindFirstChild("HumanoidRootPart") or not RP then
+        if not Enemy:FindFirstChild("HumanoidRootPart") or not RP or (isBoss and not bossAutoFarmToggleValue) then
             break
         end
 
@@ -573,7 +610,7 @@ function beat(RP, Enemy, repFarm)
 
         player.Character.Remotes.KeyEvent:FireServer(key, "Mouse1", "Down", CFrame.new(), CFrame.new())
 
-        if ((not autoFarmToggleValue and not repFarm) or (player.Character:FindFirstChild("Humanoid"))) and not isAlive then
+        if ((not autoFarmToggleValue and not repAutoFarmToggleValue) or (player.Character:FindFirstChild("Humanoid"))) and not isAlive then
             break
         elseif not repAutoFarmToggleValue then
             break
@@ -596,7 +633,7 @@ end)
 
 spawn(function()
     while true do
-        if (player.Character:FindFirstChild("Humanoid") and player.Character.Humanoid.Health == 0) and (autoFarmToggleValue or repAutoFarmToggleValue) then
+        if (player.Character:FindFirstChild("Humanoid") and player.Character.Humanoid.Health == 0) and (autoFarmToggleValue or repAutoFarmToggleValue or bossAutoFarmToggleValue) then
             isAlive = false
 	        repeat wait() until player.PlayerGui:FindFirstChild("SpawnSelection")
             repeat wait() until not player.PlayerGui:FindFirstChild("SpawnSelection")
@@ -614,7 +651,7 @@ spawn(function()
         if autoFarmToggleValue then
             if player.Character:FindFirstChild("HumanoidRootPart") then
                 local RP = player.Character:FindFirstChild("HumanoidRootPart")
-                local nearest = findNearest()
+                local nearest = findNearest(false, false)
                 if nearest then
                     local tween = tweenService:Create(RP, TweenInfo.new((RP.Position - nearest:FindFirstChild("HumanoidRootPart").Position).Magnitude / _G.farmSpeed, Enum.EasingStyle.Linear), {CFrame = nearest:FindFirstChild("HumanoidRootPart").CFrame})
                     tween:Play()
@@ -680,18 +717,19 @@ spawn(function()
                         local RP = player.Character:FindFirstChild("HumanoidRootPart")
                         local nearest
                         while true do
-                            nearest = findNearest(true)
+                            nearest = findNearest(true, false)
                             if nearest then
                                 break
                             end
                             wait()
                         end
+                        local isBoss = table.find(_G.bossesWhitelist, nearest.Name)
                         if nearest then
                             goalNPCPos = nearest:FindFirstChild("HumanoidRootPart").Position
                             local tween = tweenService:Create(RP, TweenInfo.new((RP.Position - nearest:FindFirstChild("HumanoidRootPart").Position).Magnitude / _G.repFarmSpead, Enum.EasingStyle.Linear), {CFrame = nearest:FindFirstChild("HumanoidRootPart").CFrame})
                             tween:Play()
                             while isAlive do
-                                if not repAutoFarmToggleValue or not nearest:FindFirstChild("HumanoidRootPart") then
+                                if not repAutoFarmToggleValue or not nearest:FindFirstChild("HumanoidRootPart") or (isBoss and not bossAutoFarmToggleValue) then
                                     tween:Pause()
                                     break
                                 end
@@ -705,7 +743,7 @@ spawn(function()
 
                                 if (RP.Position - nearest.HumanoidRootPart.Position).Magnitude < 30 then
                                     tween:Pause()
-                                    beat(RP, nearest, true)
+                                    beat(RP, nearest)
                                     break
                                 end 
                                 wait()
@@ -737,6 +775,36 @@ spawn(function()
                             end 
                         end
                     end 
+                end
+            end
+        end
+        wait()
+    end
+end)
+
+spawn(function()
+    while true do 
+        if bossAutoFarmToggleValue and isAlive and not repAutoFarmToggleValue and not autoFarmToggleValue then
+            if player.Character:FindFirstChild("HumanoidRootPart") then
+                local RP = player.Character:FindFirstChild("HumanoidRootPart")
+                local nearest = findNearest(false, true)
+                if nearest then
+                    local tween = tweenService:Create(RP, TweenInfo.new((RP.Position - nearest:FindFirstChild("HumanoidRootPart").Position).Magnitude / _G.farmSpeed, Enum.EasingStyle.Linear), {CFrame = nearest:FindFirstChild("HumanoidRootPart").CFrame})
+                    tween:Play()
+                    while true do
+                        if not bossAutoFarmToggleValue or repAutoFarmToggleValue then
+                            tween:Pause()
+                            break
+                        end
+                        if nearest:FindFirstChild("HumanoidRootPart") then
+                            if ((RP.Position - nearest.HumanoidRootPart.Position).Magnitude < 30) then
+                                tween:Pause()
+                                beat(RP, nearest)
+                                break
+                            end
+                        end
+                        wait()
+                    end
                 end
             end
         end
